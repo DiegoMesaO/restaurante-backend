@@ -14,33 +14,33 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/cuentas")
 @RequiredArgsConstructor
-public class CuentaController {
+public class BillController {
 
-    private final CuentaRepository cuentaRepository;
-    private final ItemCuentaRepository itemCuentaRepository;
-    private final ProductoRepository productoRepository;
-    private final MesaRepository mesaRepository;
-    private final UsuarioRepository usuarioRepository;
+    private final BillRepository billRepository;
+    private final BillItemRepository billItemRepository;
+    private final ProductRepository productRepository;
+    private final TableRepository tableRepository;
+    private final UserRepository userRepository;
 
     // 🧾 Ver una cuenta con sus productos
     @GetMapping("/{id}")
     public ResponseEntity<CuentaDTO> verCuenta(@PathVariable Long id) {
-        Cuenta cuenta = cuentaRepository.findById(id).orElseThrow();
-        List<ItemCuenta> items = itemCuentaRepository.findByCuentaId(id);
+        Bill bill = billRepository.findById(id).orElseThrow();
+        List<BillItem> items = billItemRepository.findByCuentaId(id);
 
         List<ItemDetalleDTO> productos = items.stream()
                 .map(item -> new ItemDetalleDTO(
-                        item.getProducto().getNombre(),
+                        item.getProduct().getNombre(),
                         item.getCantidad(),
                         item.getSubtotal()
                 ))
                 .collect(Collectors.toList());
 
         CuentaDTO dto = new CuentaDTO(
-                cuenta.getMesa().getNumero(),
+                bill.getTable().getNumero(),
                 productos,
-                cuenta.getTotal(),
-                cuenta.isPagada()
+                bill.getTotal(),
+                bill.isPagada()
         );
 
         return ResponseEntity.ok(dto);
@@ -51,22 +51,22 @@ public class CuentaController {
     public ResponseEntity<?> agregarProducto(@PathVariable Long id,
                                              @RequestBody ProductoCuentaDTO dto) {
 
-        Cuenta cuenta = cuentaRepository.findById(id).orElseThrow();
-        Producto producto = productoRepository.findById(dto.getProductoId()).orElseThrow();
+        Bill bill = billRepository.findById(id).orElseThrow();
+        Product product = productRepository.findById(dto.getProductoId()).orElseThrow();
 
-        double subtotal = producto.getPrecioUnitario() * dto.getCantidad();
+        double subtotal = product.getPrecioUnitario() * dto.getCantidad();
 
-        ItemCuenta item = ItemCuenta.builder()
-                .cuenta(cuenta)
-                .producto(producto)
+        BillItem item = BillItem.builder()
+                .bill(bill)
+                .product(product)
                 .cantidad(dto.getCantidad())
                 .subtotal(subtotal)
                 .build();
 
-        itemCuentaRepository.save(item);
+        billItemRepository.save(item);
 
-        cuenta.setTotal(cuenta.getTotal() + subtotal);
-        cuentaRepository.save(cuenta);
+        bill.setTotal(bill.getTotal() + subtotal);
+        billRepository.save(bill);
 
         return ResponseEntity.ok("Producto agregado correctamente");
     }
@@ -74,14 +74,14 @@ public class CuentaController {
     // 🔓 Cerrar la cuenta y liberar la mesa
     @PutMapping("/{id}/cerrar")
     public ResponseEntity<?> cerrarCuenta(@PathVariable Long id) {
-        Cuenta cuenta = cuentaRepository.findById(id).orElseThrow();
-        cuenta.setPagada(true);
-        cuenta.setFechaCierre(LocalDateTime.now());
+        Bill bill = billRepository.findById(id).orElseThrow();
+        bill.setPagada(true);
+        bill.setFechaCierre(LocalDateTime.now());
 
-        Mesa mesa = cuenta.getMesa();
-        mesa.setDisponible(true);
-        mesaRepository.save(mesa);
-        cuentaRepository.save(cuenta);
+        Table table = bill.getTable();
+        table.setDisponible(true);
+        tableRepository.save(table);
+        billRepository.save(bill);
 
         return ResponseEntity.ok("Cuenta cerrada y mesa liberada");
     }
@@ -91,24 +91,24 @@ public class CuentaController {
     public ResponseEntity<?> abrirCuenta(@PathVariable Long mesaId,
                                          @PathVariable Long meseroId) {
 
-        Mesa mesa = mesaRepository.findById(mesaId).orElseThrow();
-        Usuario mesero = usuarioRepository.findById(meseroId).orElseThrow();
+        Table table = tableRepository.findById(mesaId).orElseThrow();
+        User mesero = userRepository.findById(meseroId).orElseThrow();
 
-        if (!mesa.isDisponible()) {
+        if (!table.isDisponible()) {
             return ResponseEntity.badRequest().body("La mesa ya está ocupada");
         }
 
-        Cuenta cuenta = Cuenta.builder()
-                .mesa(mesa)
+        Bill bill = Bill.builder()
+                .table(table)
                 .mesero(mesero)
                 .total(0)
                 .pagada(false)
                 .fechaCreacion(LocalDateTime.now())
                 .build();
 
-        cuentaRepository.save(cuenta);
-        mesa.setDisponible(false);
-        mesaRepository.save(mesa);
+        billRepository.save(bill);
+        table.setDisponible(false);
+        tableRepository.save(table);
 
         return ResponseEntity.ok("Cuenta abierta y mesa ocupada");
     }

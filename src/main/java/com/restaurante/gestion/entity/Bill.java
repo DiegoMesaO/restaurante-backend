@@ -1,17 +1,17 @@
 package com.restaurante.gestion.entity;
-
+import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "cuentas")
+@Table(name = "bills")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Cuenta {
+public class Bill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,12 +26,12 @@ public class Cuenta {
 
     @ManyToOne
     @JoinColumn(name = "mesa_id")
-    private Mesa mesa;
+    private Table table;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    private Usuario mesero;
+    private User mesero;
 
     @OneToMany(mappedBy = "cuenta", cascade = CascadeType.ALL)
-    private List<ItemCuenta> items;
+    private List<BillItem> items;
 }

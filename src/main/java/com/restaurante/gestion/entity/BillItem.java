@@ -12,17 +12,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 
-public class ItemCuenta {
+public class BillItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    private Cuenta cuenta;
+    private Bill bill;
 
     @ManyToOne
-    private Producto producto;
+    private Product product;
 
     private int cantidad;
     private double subtotal;

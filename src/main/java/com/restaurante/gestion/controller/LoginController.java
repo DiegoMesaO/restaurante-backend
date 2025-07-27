@@ -1,7 +1,7 @@
 package com.restaurante.gestion.controller;
 
-import com.restaurante.gestion.entity.Usuario;
-import com.restaurante.gestion.repository.UsuarioRepository;
+import com.restaurante.gestion.entity.User;
+import com.restaurante.gestion.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import java.util.Optional;
 public class LoginController {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -28,13 +28,13 @@ public class LoginController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Usuario login) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreo(login.getCorreo());
+    public ResponseEntity<?> login(@RequestBody User login) {
+        Optional<User> usuarioOpt = userRepository.findByEmail(login.getCorreo());
 
         if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
-            if (passwordEncoder.matches(login.getContrasena(), usuario.getContrasena())) {
-                String token = jwtUtil.generarToken(usuario.getCorreo(), usuario.getRol());
+            User user = usuarioOpt.get();
+            if (passwordEncoder.matches(login.getContrasena(), user.getContrasena())) {
+                String token = jwtUtil.generarToken(user.getCorreo(), user.getRol());
                 return ResponseEntity.ok(Map.of("token", token));
             }
         }

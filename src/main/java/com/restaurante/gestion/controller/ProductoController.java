@@ -1,7 +1,7 @@
 package com.restaurante.gestion.controller;
 
-import com.restaurante.gestion.entity.Producto;
-import com.restaurante.gestion.service.ProductoService;
+import com.restaurante.gestion.entity.Product;
+import com.restaurante.gestion.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,30 +13,30 @@ import java.util.List;
 public class ProductoController {
 
     @Autowired
-    private ProductoService productoService;
+    private ProductService productService;
 
     @GetMapping
-    public List<Producto> listarProductos() {
-        return productoService.listarProductos();
+    public List<Product> listarProductos() {
+        return productService.listarProductos();
     }
 
     @GetMapping("/{id}")
-    public Producto obtenerProducto(@PathVariable Long id) {
-        return productoService.obtenerPorId(id);
+    public Product obtenerProducto(@PathVariable Long id) {
+        return productService.obtenerPorId(id);
     }
 
     @PostMapping
-    public Producto crearProducto(@RequestBody Producto producto) {
-        return productoService.crearProducto(producto);
+    public Product crearProducto(@RequestBody Product product) {
+        return productService.crearProducto(product);
     }
 
     @PutMapping("/{id}")
-    public Producto actualizarProducto(@PathVariable Long id, @RequestBody Producto producto) {
-        return productoService.actualizarProducto(id, producto);
+    public Product actualizarProducto(@PathVariable Long id, @RequestBody Product product) {
+        return productService.actualizarProducto(id, product);
     }
 
     @DeleteMapping("/{id}")
     public boolean eliminarProducto(@PathVariable Long id) {
-        return productoService.eliminarProducto(id);
+        return productService.eliminarProducto(id);
     }
 }

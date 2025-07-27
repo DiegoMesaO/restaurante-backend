@@ -1,7 +1,7 @@
 package com.restaurante.gestion.service;
 
-import com.restaurante.gestion.entity.Pedido;
-import com.restaurante.gestion.repository.PedidoRepository;
+import com.restaurante.gestion.entity.Order;
+import com.restaurante.gestion.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,23 +11,23 @@ import java.util.List;
 public class PedidoService {
 
     @Autowired
-    private PedidoRepository pedidoRepository;
+    private OrderRepository orderRepository;
 
-    public List<Pedido> listarPedidos() {
-        return pedidoRepository.findAll();
+    public List<Order> listarPedidos() {
+        return orderRepository.findAll();
     }
 
-    public Pedido obtenerPorId(Long id) {
-        return pedidoRepository.findById(id).orElse(null);
+    public Order obtenerPorId(Long id) {
+        return orderRepository.findById(id).orElse(null);
     }
 
-    public Pedido crearPedido(Pedido pedido) {
-        return pedidoRepository.save(pedido);
+    public Order crearPedido(Order order) {
+        return orderRepository.save(order);
     }
 
     public boolean eliminarPedido(Long id) {
-        if (pedidoRepository.existsById(id)) {
-            pedidoRepository.deleteById(id);
+        if (orderRepository.existsById(id)) {
+            orderRepository.deleteById(id);
             return true;
         }
         return false;

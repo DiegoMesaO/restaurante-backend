@@ -1,12 +1,12 @@
 package com.restaurante.gestion.repository;
 
-import com.restaurante.gestion.entity.ItemCuenta;
+import com.restaurante.gestion.entity.BillItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ItemCuentaRepository extends JpaRepository<ItemCuenta, Long> {
-    List<ItemCuenta> findByCuentaId(Long cuentaId);
+public interface BillItemRepository extends JpaRepository<BillItem, Long> {
+    List<BillItem> findByCuentaId(Long cuentaId);
 }

@@ -1,15 +1,15 @@
 package com.restaurante.gestion.entity;
-
+import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "pedidos")
+@Table(name = "orders")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Pedido {
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,9 +19,9 @@ public class Pedido {
 
     @ManyToOne
     @JoinColumn(name = "producto_id")
-    private Producto producto;
+    private Product product;
 
     @ManyToOne
     @JoinColumn(name = "cuenta_id")
-    private Cuenta cuenta;
+    private Bill bill;
 }

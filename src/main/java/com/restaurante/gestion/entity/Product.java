@@ -1,15 +1,16 @@
 package com.restaurante.gestion.entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.*;
 
 @Entity
-@Table(name = "productos")
+@Table(name = "products")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Producto {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
